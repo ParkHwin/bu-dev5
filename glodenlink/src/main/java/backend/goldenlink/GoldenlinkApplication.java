@@ -1,13 +1,14 @@
-package backend.glodenlink;
+package backend.goldenlink;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GlodenlinkApplication {
+public class GoldenlinkApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GlodenlinkApplication.class, args);
+
+		SpringApplication.run(GoldenlinkApplication.class, args);
 	}
 
 }

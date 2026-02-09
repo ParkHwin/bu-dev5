@@ -118,7 +118,7 @@ public class HospitalService {
                 return result;
             }
 
-            // item이 List인지 Map인지 확인
+            // item이 List인지 Map인지 확인 List는 순서가 있는 데이터 묶음
             if (itemObj instanceof List) {
                 List<Map<String, Object>> itemList = (List<Map<String, Object>>) itemObj;
                 System.out.println("✅ 검색된 병원 수: " + itemList.size());
@@ -137,7 +137,7 @@ public class HospitalService {
                     result.add(dto);
                 }
             } else if (itemObj instanceof Map) {
-                // 결과가 1개일 때는 Map으로 올 수 있음
+                // 결과가 1개일 때는 Map으로 올 수 있음 Map key(이름)와 value(값)로 이루어진 구조
                 Map<String, Object> item = (Map<String, Object>) itemObj;
                 System.out.println("✅ 검색된 병원 수: 1");
                 System.out.println("Item keys: " + item.keySet());
@@ -158,38 +158,9 @@ public class HospitalService {
             e.printStackTrace();
         }
 
+        System.out.println(result);
+
         return result;
-    }
-
-    // =========================
-    // 3️⃣ 주소 → 좌표 → 주변검색
-    // =========================
-    public String searchByAddressTest(String address) {
-
-        try {
-
-            WebClient kakaoClient = WebClient.builder()
-                    .baseUrl("https://dapi.kakao.com")
-                    .defaultHeader("Authorization", "KakaoAK " + kakaoKey)
-                    .build();
-            // https://dapi.kakao.com/v2/local/search/address.json?query=서울 강남구 언주로
-            // 211&key=7dd93083965269c6d73dc08000bda4a2
-            String response = kakaoClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/v2/local/search/address.json")
-                            .queryParam("query", address)
-                            .build())
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-
-            System.out.println(response);
-
-            return "ok";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "ok";
-        }
     }
 
     // =========================

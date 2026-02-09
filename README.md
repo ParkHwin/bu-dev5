@@ -1,2 +1,1 @@
-###Goldenlink 게시판
-ㅇ
+Goldenlink 게시판

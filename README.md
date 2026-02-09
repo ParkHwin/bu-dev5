@@ -14,5 +14,5 @@ Spring Boot와 MySQL을 이용한 REST API 게시판 만들었습니다.
 
 ## 🚀 실행 방법
 1. MySQL에서 `goldenlink` 데이터베이스 생성
-2. `application.yml` 또는 `properties`에서 DB 계정 정보 설정
+2. `properties`에서 DB 계정 정보 설정
 3. 프로젝트 실행

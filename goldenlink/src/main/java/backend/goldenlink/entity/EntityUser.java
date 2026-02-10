@@ -109,4 +109,8 @@ public class EntityUser {
         return "EntityUser [id=" + id + ", userid=" + userid + ", userpw=" + userpw + ", name=" + name + ", phone="
                 + phone + ", email=" + email + ", address=" + address + ", role=" + role + "]";
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> e98aaebfeaa7f8802535e7cab97347865d2f01b2

@@ -50,10 +50,17 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO, HttpSession session) {
         Optional<EntityUser> userID = userRepository.findByUserid(userLoginDTO.getUserid());
         if (userID.isPresent() && userID.get().getUserpw().equals(userLoginDTO.getUserpw())) {
+<<<<<<< HEAD
         // userid가 있다면 레코드 값 중 userpw를 불러와 DTO pw와 대조
         // HttpSession session = allowSession.getSession();
 
         session.setAttribute("LoginUser", userID.get());
+=======
+            // userid가 있다면 레코드 값 중 userpw를 불러와 DTO pw와 대조
+            // HttpSession session = allowSession.getSession();
+
+            session.setAttribute("LoginUser", userID.get());
+>>>>>>> e98aaebfeaa7f8802535e7cab97347865d2f01b2
             return ResponseEntity.ok("로그인 성공!");
         } else {
             return ResponseEntity.badRequest().body("로그인 실패!");
@@ -81,5 +88,10 @@ public class UserController {
             return ResponseEntity.badRequest().body("정보 오류입니다!");
         }
     }
+<<<<<<< HEAD
     
 }
+=======
+
+}
+>>>>>>> e98aaebfeaa7f8802535e7cab97347865d2f01b2

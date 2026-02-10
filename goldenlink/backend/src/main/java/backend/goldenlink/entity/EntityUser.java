@@ -25,7 +25,7 @@ public class EntityUser {
     }
 
     public EntityUser(Long id, String userid, String userpw, String name, String phone, String email, String address,
-        String role) {
+                      String role) {
         this.id = id;
         this.userid = userid;
         this.userpw = userpw;
@@ -109,8 +109,4 @@ public class EntityUser {
         return "EntityUser [id=" + id + ", userid=" + userid + ", userpw=" + userpw + ", name=" + name + ", phone="
                 + phone + ", email=" + email + ", address=" + address + ", role=" + role + "]";
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e98aaebfeaa7f8802535e7cab97347865d2f01b2

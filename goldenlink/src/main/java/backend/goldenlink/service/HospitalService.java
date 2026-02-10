@@ -1,6 +1,6 @@
-package backend.glodenlink;
+package backend.goldenlink.service;
 
-import backend.glodenlink.dto.HospitalDto;
+import backend.goldenlink.dto.HospitalDto;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

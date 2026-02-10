@@ -1,7 +1,7 @@
-package backend.glodenlink.controller;
+package backend.goldenlink.controller;
 
-import backend.glodenlink.HospitalService;
-import backend.glodenlink.dto.HospitalDto;
+import backend.goldenlink.service.HospitalService;
+import backend.goldenlink.dto.HospitalDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

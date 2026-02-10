@@ -1,5 +1,5 @@
-src/main/java/backend/glodenlink
- ├─ GlodenlinkApplication.java                  
+src/main/java/backend/goldenlink
+ ├─ GoldenlinkApplication.java
  ├─ config
  │   └─ ApiKeys.java
  ├─ controller

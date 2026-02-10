@@ -1,4 +1,4 @@
-package backend.glodenlink.dto;
+package backend.goldenlink.dto;
 
 public class HospitalDto {
 

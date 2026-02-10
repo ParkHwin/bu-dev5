@@ -1,4 +1,4 @@
-package backend.glodenlink;
+package backend.goldenlink;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

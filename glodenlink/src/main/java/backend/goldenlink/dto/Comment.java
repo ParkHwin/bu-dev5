@@ -1,5 +1,6 @@
 package backend.goldenlink.dto;
 
+import backend.goldenlink.entity.EntityUser;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class Comment {
     // 댓글 작성자 (users 테이블과 연결) → 관리자만 작성 가능
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userid", nullable = false)
-    private User user;
+    private EntityUser user;
 
     // 어떤 게시글(Board)에 달린 댓글인지
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,7 +43,7 @@ public class Comment {
     }
 
     // 생성자
-    public Comment(User user, Board board, String content) {
+    public Comment(EntityUser user, Board board, String content) {
         this.user = user;
         this.board = board;
         this.content = content;
@@ -62,11 +63,11 @@ public class Comment {
         this.content = content;
     }
 
-    public User getUser() {
+    public EntityUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(EntityUser user) {
         this.user = user;
     }
 

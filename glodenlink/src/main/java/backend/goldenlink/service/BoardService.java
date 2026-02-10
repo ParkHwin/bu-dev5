@@ -1,7 +1,7 @@
 package backend.goldenlink.service;
 
 import backend.goldenlink.dto.Board;
-import backend.goldenlink.dto.User;
+import backend.goldenlink.entity.EntityUser;
 import backend.goldenlink.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class BoardService {
     }
 
     // ✅ 게시글 작성 (관리자 권한 체크 포함)
-    public Board save(Board board, User loginUser) {
+    public Board save(Board board, EntityUser loginUser) {
         // 공지사항(NOTICE)은 관리자만 작성 가능
         if ("NOTICE".equals(board.getCategory()) && !"ADMIN".equals(loginUser.getRole())) {
             throw new RuntimeException("공지사항은 관리자만 등록할 수 있습니다.");
@@ -58,7 +58,7 @@ public class BoardService {
     }
 
     // ✅ 게시글 수정 (반환 타입을 Board로 변경 및 로직 정정)
-    public Board updateBoard(Long boardId, User loginUser, Board updateBoard) {
+    public Board updateBoard(Long boardId,  EntityUser loginUser, Board updateBoard) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
@@ -76,7 +76,7 @@ public class BoardService {
     }
 
     // ✅ 게시글 삭제
-    public void delete(Long id, User loginUser) {
+    public void delete(Long id, EntityUser loginUser) {
         Board board = findById(id);
 
         // 권한 체크: 작성자 본인이거나 관리자여야 함

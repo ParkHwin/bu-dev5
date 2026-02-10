@@ -1,7 +1,7 @@
 package backend.goldenlink.controller;
 
 import backend.goldenlink.dto.Board;
-import backend.goldenlink.dto.User;
+import backend.goldenlink.entity.EntityUser;
 import backend.goldenlink.service.BoardService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class BoardController {
     // ✅ 게시글 작성
     @PostMapping
     public Board createBoard(@RequestBody Board board, HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        EntityUser loginUser = (EntityUser) session.getAttribute("loginUser");
         if (loginUser == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
@@ -45,7 +45,7 @@ public class BoardController {
     // ✅ 게시글 수정
     @PutMapping("/{id}")
     public Board updateBoard(@PathVariable Long id, @RequestBody Board board, HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        EntityUser loginUser = (EntityUser) session.getAttribute("loginUser");
         if (loginUser == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
@@ -55,7 +55,7 @@ public class BoardController {
     // ✅ 게시글 삭제
     @DeleteMapping("/{id}")
     public String deleteBoard(@PathVariable Long id, HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        EntityUser loginUser = (EntityUser) session.getAttribute("loginUser");
         if (loginUser == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }

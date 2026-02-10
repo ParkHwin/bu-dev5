@@ -1,7 +1,7 @@
 package backend.goldenlink.controller;
 
 import backend.goldenlink.dto.Comment;
-import backend.goldenlink.dto.User;
+import backend.goldenlink.entity.EntityUser;
 import backend.goldenlink.service.CommentService;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,7 +30,7 @@ public class CommentController {
                                  HttpSession session) {
 
         // 1. 세션에서 로그인 유저 가져오기
-        User loginUser = (User) session.getAttribute("loginUser");
+        EntityUser loginUser = (EntityUser) session.getAttribute("loginUser");
         if (loginUser == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
@@ -52,7 +52,7 @@ public class CommentController {
             @PathVariable Long commentId,
             HttpSession session
     ) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        EntityUser loginUser = (EntityUser) session.getAttribute("loginUser");
 
         if (loginUser == null) {
             throw new RuntimeException("로그인이 필요합니다.");
@@ -69,7 +69,7 @@ public class CommentController {
             @RequestBody Comment commentDto,
             HttpSession session
     ) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        EntityUser loginUser = (EntityUser) session.getAttribute("loginUser");
 
         if (loginUser == null) {
             throw new RuntimeException("로그인이 필요합니다.");

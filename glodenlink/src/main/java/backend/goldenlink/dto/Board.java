@@ -1,5 +1,6 @@
 package backend.goldenlink.dto;
 
+import backend.goldenlink.entity.EntityUser;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class Board {
     // 작성자 (users 테이블과 연결)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userid", nullable = false)
-    private User user;
+    private EntityUser user;
 
     // 게시판 종류 (INFO, QUESTION, NOTICE)
     @Column(nullable = false, length = 20)
@@ -47,7 +48,7 @@ public class Board {
     }
 
     // 생성자
-    public Board(User user, String category, String title, String content) {
+    public Board(EntityUser user, String category, String title, String content) {
         this.user = user;
         this.category = category;
         this.title = title;
@@ -61,11 +62,11 @@ public class Board {
         return id;
     }
 
-    public User getUser() {
+    public EntityUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(EntityUser user) {
         this.user = user;
     }
 

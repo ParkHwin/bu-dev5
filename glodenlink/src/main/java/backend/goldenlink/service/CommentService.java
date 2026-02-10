@@ -2,7 +2,7 @@ package backend.goldenlink.service;
 
 import backend.goldenlink.dto.Board;
 import backend.goldenlink.dto.Comment;
-import backend.goldenlink.dto.User;
+import backend.goldenlink.entity.EntityUser;
 import backend.goldenlink.repository.BoardRepository;
 import backend.goldenlink.repository.CommentRepository;
 
@@ -30,7 +30,7 @@ public class CommentService {
     }
 
     // 댓글 작성
-    public Comment createComment(Long boardId, User loginUser, String content) {
+    public Comment createComment(Long boardId, EntityUser loginUser, String content) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
@@ -56,7 +56,7 @@ public class CommentService {
     }
 
     // 댓글 수정
-    public Comment updateComment(Long commentId, User loginUser, String content) {
+    public Comment updateComment(Long commentId,  EntityUser loginUser, String content) {
         // 1. 댓글 존재 여부 확인
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
@@ -75,7 +75,7 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    public void deleteComment(Long commentId, User loginUser) {
+    public void deleteComment(Long commentId,  EntityUser loginUser) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
 

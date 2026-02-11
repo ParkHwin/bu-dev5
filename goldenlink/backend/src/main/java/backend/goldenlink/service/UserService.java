@@ -24,7 +24,7 @@ public class UserService {
         if (userRepository.existsByEmail(userRegisterDTO.getEmail())) {
             throw new RuntimeException("이미 있는 이메일입니다!");
         }
-        if (userRegisterDTO.getUserid().length() < 8){
+        if (userRegisterDTO.getUserpw().length() < 8){
             throw new RuntimeException("비밀번호는 최소 8자 이상이어야 합니다!");
         }
         EntityUser newUser = new EntityUser();

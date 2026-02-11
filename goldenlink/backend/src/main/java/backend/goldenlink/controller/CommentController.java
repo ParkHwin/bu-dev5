@@ -1,6 +1,6 @@
 package backend.goldenlink.controller;
 
-import backend.goldenlink.dto.Comment;
+import backend.goldenlink.entity.Comment;
 import backend.goldenlink.entity.EntityUser;
 import backend.goldenlink.service.CommentService;
 

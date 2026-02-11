@@ -1,6 +1,6 @@
 package backend.goldenlink.repository;
 
-import backend.goldenlink.dto.Board;
+import backend.goldenlink.entity.Board;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

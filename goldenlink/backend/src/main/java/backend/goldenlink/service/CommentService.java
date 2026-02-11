@@ -1,7 +1,7 @@
 package backend.goldenlink.service;
 
-import backend.goldenlink.dto.Board;
-import backend.goldenlink.dto.Comment;
+import backend.goldenlink.entity.Board;
+import backend.goldenlink.entity.Comment;
 import backend.goldenlink.entity.EntityUser;
 import backend.goldenlink.repository.BoardRepository;
 import backend.goldenlink.repository.CommentRepository;

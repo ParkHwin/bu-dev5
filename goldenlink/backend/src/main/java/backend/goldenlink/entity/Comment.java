@@ -1,6 +1,5 @@
-package backend.goldenlink.dto;
+package backend.goldenlink.entity;
 
-import backend.goldenlink.entity.EntityUser;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

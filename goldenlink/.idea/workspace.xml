@@ -5,10 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d12ee81f-efe8-454e-b624-a3cd49aed724" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/schema.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/dto/BoardDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/dto/CommentDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/data.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/controller/BoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/controller/BoardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/controller/CommentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/controller/CommentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/dto/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/entity/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/dto/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/entity/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/repository/BoardRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/repository/BoardRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/repository/CommentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/repository/CommentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/service/BoardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/service/BoardService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/service/CommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/goldenlink/service/CommentService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,6 +155,7 @@
       <workItem from="1770696391341" duration="6829000" />
       <workItem from="1770703344872" duration="6172000" />
       <workItem from="1770783669467" duration="3846000" />
+      <workItem from="1770792389473" duration="610000" />
     </task>
     <servers />
   </component>

@@ -1,6 +1,6 @@
 package backend.goldenlink.repository;
 
-import backend.goldenlink.dto.Comment;
+import backend.goldenlink.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

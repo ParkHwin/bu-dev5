@@ -1,6 +1,6 @@
 package backend.goldenlink.controller;
 
-import backend.goldenlink.dto.Board;
+import backend.goldenlink.entity.Board;
 import backend.goldenlink.entity.EntityUser;
 import backend.goldenlink.service.BoardService;
 import jakarta.servlet.http.HttpSession;

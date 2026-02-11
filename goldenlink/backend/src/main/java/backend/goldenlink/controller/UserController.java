@@ -15,34 +15,30 @@ import backend.goldenlink.dto.UserLoginDTO;
 import backend.goldenlink.dto.UserRegisterDTO;
 import backend.goldenlink.entity.EntityUser;
 import backend.goldenlink.repository.UserRepository;
+import backend.goldenlink.service.UserService;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/goldenlink")
 public class UserController {
 
+    private final UserRepository userRepository;
+
+    private final UserService userService;
+    
     @Autowired
-    UserRepository userRepository;
+    public UserController(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegisterDTO userRegisterDTO) {
-        if (userRepository.existsByUserid(userRegisterDTO.getUserid())) {
-            return ResponseEntity.badRequest().body("이미 있는 아이디입니다!");
-        } else if (userRepository.existsByEmail(userRegisterDTO.getEmail())) {
-            return ResponseEntity.badRequest().body("이미 있는 이메일입니다!");
-        } else {
-            EntityUser newUser = new EntityUser();
-            newUser.setUserid(userRegisterDTO.getUserid());
-            newUser.setUserpw(userRegisterDTO.getUserpw());
-            newUser.setName(userRegisterDTO.getName());
-            newUser.setPhone(userRegisterDTO.getPhone());
-            newUser.setEmail(userRegisterDTO.getEmail());
-            newUser.setAddress(userRegisterDTO.getAddress());
-            // newUser.setRole(userRegisterDTO.getRole());
-
-            userRepository.save(newUser);
-
+        try{
+            userService.register(userRegisterDTO);
             return ResponseEntity.ok("회원가입 성공!");
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

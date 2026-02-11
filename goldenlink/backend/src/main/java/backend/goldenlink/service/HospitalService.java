@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import jakarta.annotation.PostConstruct;
 import java.util.*;
 
 @Service
@@ -23,55 +24,131 @@ public class HospitalService {
 
     private final XmlMapper xmlMapper = new XmlMapper();
 
-    // =========================
-    // 1️⃣ 병원 이름 검색
-    // =========================
-    public List<HospitalDto> searchByName(String keyword) {
+    // 🔥 전국 병원 캐시 (초기 로드용)
+    private List<HospitalDto> allHospitals = Collections.synchronizedList(new ArrayList<>());
+    private volatile boolean isLoaded = false;
 
-        List<HospitalDto> result = new ArrayList<>();
-
+    // ===================================
+    // 📍 서버 시작 시 전국 병원 데이터 로드
+    // ===================================
+    @PostConstruct
+    public void loadAllHospitals() {
+        System.out.println("\n🚀 ============================================");
+        System.out.println("🚀 전국 응급의료센터 데이터 로드 시작...");
+        System.out.println("🚀 ============================================\n");
+        
         try {
-            String uri = "/getEgytListInfoInqire?serviceKey=" + serviceKey
-                    + "&pageNo=1&numOfRows=200";
+            int pageNo = 1;
+            int pageSize = 200;
+            boolean hasMore = true;
 
-            String xml = nemcClient.get()
-                    .uri(uri)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+            while (hasMore) {
+                String uri = "/getEgytListInfoInqire?serviceKey=" + serviceKey
+                        + "&pageNo=" + pageNo
+                        + "&numOfRows=" + pageSize;
 
-            Map map = xmlMapper.readValue(xml, Map.class);
-            Map body = (Map) map.get("body");
-            Map items = (Map) body.get("items");
-            List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
+                String xml = nemcClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
 
-            for (Map<String, Object> item : itemList) {
-
-                String name = (String) item.get("dutyName");
-
-                if (name != null && name.contains(keyword)) {
-
-                    HospitalDto dto = new HospitalDto(
-                            (String) item.get("dutyName"), // hname
-                            (String) item.get("dutyAddr"), // haddress
-                            pickTel(item), // htel
-                            parseDouble(item.get("wgs84Lat")), // hlat
-                            parseDouble(item.get("wgs84Lon")) // hlon
-                    );
-
-                    result.add(dto);
+                Map map = xmlMapper.readValue(xml, Map.class);
+                Map body = (Map) map.get("body");
+                
+                if (body == null) {
+                    System.out.println("❌ Body가 null입니다. 로드 종료.");
+                    break;
                 }
+
+                Map items = (Map) body.get("items");
+                if (items == null) {
+                    System.out.println("❌ 더 이상 데이터가 없습니다.");
+                    hasMore = false;
+                    break;
+                }
+
+                Object itemObj = items.get("item");
+                if (itemObj == null) {
+                    hasMore = false;
+                    break;
+                }
+
+                List<Map<String, Object>> itemList;
+                if (itemObj instanceof List) {
+                    itemList = (List<Map<String, Object>>) itemObj;
+                } else {
+                    itemList = List.of((Map<String, Object>) itemObj);
+                }
+
+                for (Map<String, Object> item : itemList) {
+                    HospitalDto dto = new HospitalDto(
+                            (String) item.get("dutyName"),
+                            (String) item.get("dutyAddr"),
+                            pickTel(item),
+                            parseDouble(item.get("wgs84Lat")),
+                            parseDouble(item.get("wgs84Lon"))
+                    );
+                    allHospitals.add(dto);
+                }
+
+                System.out.println("✅ 페이지 " + pageNo + " 로드 완료 (누적: " + allHospitals.size() + "개)");
+
+                if (itemList.size() < pageSize) {
+                    hasMore = false;
+                }
+                pageNo++;
             }
 
+            isLoaded = true;
+            System.out.println("\n✅ ============================================");
+            System.out.println("✅ 전국 응급의료센터 로드 완료!");
+            System.out.println("✅ 총 " + allHospitals.size() + "개 병원 준비됨");
+            System.out.println("✅ ============================================\n");
+
         } catch (Exception e) {
+            System.out.println("❌ 응급의료센터 로드 중 에러:");
             e.printStackTrace();
         }
+    }
 
+    // =========================
+    // 0️⃣ 전국 모든 병원 조회 (초기 로드용)
+    // =========================
+    public List<HospitalDto> getAllHospitals() {
+        if (!isLoaded) {
+            loadAllHospitals();
+        }
+        System.out.println("🌍 전국 모든 병원 조회: " + allHospitals.size() + "개");
+        return new ArrayList<>(allHospitals);
+    }
+
+    // =========================
+    // 1️⃣ 병원 이름 검색 (원래 코드 그대로 - 캐시에서 검색)
+    // =========================
+    public List<HospitalDto> searchByName(String keyword) {
+        // 🔑 검색어가 없으면 전체 반환
+        if (keyword == null || keyword.trim().isEmpty()) {
+            System.out.println("🌍 검색어 없음 → 전국 모든 병원 반환 (" + allHospitals.size() + "개)");
+            return getAllHospitals();
+        }
+
+        List<HospitalDto> result = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase().trim();
+
+        for (HospitalDto hospital : allHospitals) {
+            if (hospital.getHname() != null && 
+                hospital.getHname().toLowerCase().contains(lowerKeyword)) {
+                result.add(hospital);
+            }
+        }
+
+        System.out.println("🔍 '" + keyword + "' 검색 결과: " + result.size() + "개");
         return result;
     }
 
     // =========================
-    // 2️⃣ 좌표 주변 검색
+    // 2️⃣ 좌표 주변 검색 (원래 코드 그대로 - API가 처리)
     // =========================
     public List<HospitalDto> nearby(double lat, double lon) {
         List<HospitalDto> result = new ArrayList<>();
@@ -82,29 +159,21 @@ public class HospitalService {
                     + "&WGS84_LON=" + lon
                     + "&pageNo=1&numOfRows=20";
 
+            System.out.println("📍 API 호출: " + uri);
+
             String xml = nemcClient.get()
                     .uri(uri)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
 
-            // 🔍 응답 확인용 (디버깅)
-            System.out.println("=== nearby API 응답 ===");
-            System.out.println(xml);
-            System.out.println("=====================");
-
             Map map = xmlMapper.readValue(xml, Map.class);
-
-            // 🔍 맵 구조 확인
-            System.out.println("Map keys: " + map.keySet());
-
             Map body = (Map) map.get("body");
+            
             if (body == null) {
                 System.out.println("❌ body가 null입니다!");
                 return result;
             }
-
-            System.out.println("Body keys: " + body.keySet());
 
             Map items = (Map) body.get("items");
             if (items == null) {
@@ -114,18 +183,16 @@ public class HospitalService {
 
             Object itemObj = items.get("item");
             if (itemObj == null) {
-                System.out.println("❌ item이 null입니다!");
+                System.out.println("❌ 주변에 병원이 없습니다!");
                 return result;
             }
 
-            // item이 List인지 Map인지 확인 List는 순서가 있는 데이터 묶음
+            // item이 List인지 Map인지 확인
             if (itemObj instanceof List) {
                 List<Map<String, Object>> itemList = (List<Map<String, Object>>) itemObj;
                 System.out.println("✅ 검색된 병원 수: " + itemList.size());
 
                 for (Map<String, Object> item : itemList) {
-                    System.out.println("Item keys: " + item.keySet());
-
                     HospitalDto dto = new HospitalDto(
                             (String) item.get("dutyName"),
                             (String) item.get("dutyAddr"),
@@ -133,14 +200,12 @@ public class HospitalService {
                             parseDouble(item.get("latitude")),
                             parseDouble(item.get("longitude")));
 
-                    System.out.println("생성된 DTO: " + dto);
                     result.add(dto);
                 }
             } else if (itemObj instanceof Map) {
-                // 결과가 1개일 때는 Map으로 올 수 있음 Map key(이름)와 value(값)로 이루어진 구조
+                // 결과가 1개일 때는 Map으로 옴
                 Map<String, Object> item = (Map<String, Object>) itemObj;
                 System.out.println("✅ 검색된 병원 수: 1");
-                System.out.println("Item keys: " + item.keySet());
 
                 HospitalDto dto = new HospitalDto(
                         (String) item.get("dutyName"),
@@ -149,22 +214,20 @@ public class HospitalService {
                         parseDouble(item.get("latitude")),
                         parseDouble(item.get("longitude")));
 
-                System.out.println("생성된 DTO: " + dto);
                 result.add(dto);
             }
 
         } catch (Exception e) {
-            System.out.println("❌ 에러 발생:");
+            System.out.println("❌ 좌표 주변 검색 에러:");
             e.printStackTrace();
         }
 
-        System.out.println(result);
-
+        System.out.println("📍 좌표 (" + lat + ", " + lon + ") 근처 병원: " + result.size() + "개");
         return result;
     }
 
     // =========================
-    // 3️⃣ 주소 → 좌표 → 주변검색
+    // 3️⃣ 주소 → 좌표 → 주변검색 (원래 코드 그대로)
     // =========================
     public List<HospitalDto> searchByAddress(String address) {
         try {
@@ -172,6 +235,8 @@ public class HospitalService {
                     .baseUrl("https://dapi.kakao.com")
                     .defaultHeader("Authorization", "KakaoAK " + kakaoKey)
                     .build();
+
+            System.out.println("🏠 Kakao API 호출: 주소 '" + address + "' → 좌표 변환");
 
             Map response = kakaoClient.get()
                     .uri(uriBuilder -> uriBuilder
@@ -182,10 +247,6 @@ public class HospitalService {
                     .bodyToMono(Map.class)
                     .block();
 
-            // 🔍 Kakao 응답 확인
-            System.out.println("=== Kakao API 응답 ===");
-            System.out.println(response);
-
             List<Map<String, Object>> docs = (List<Map<String, Object>>) response.get("documents");
 
             if (docs == null || docs.isEmpty()) {
@@ -194,13 +255,12 @@ public class HospitalService {
             }
 
             Map<String, Object> first = docs.get(0);
-            System.out.println("First document: " + first);
-
             double lat = Double.parseDouble((String) first.get("y"));
             double lon = Double.parseDouble((String) first.get("x"));
 
-            System.out.println("변환된 좌표 - lat: " + lat + ", lon: " + lon);
+            System.out.println("✅ 좌표 변환 완료: lat=" + lat + ", lon=" + lon);
 
+            // 변환된 좌표로 주변 검색
             return nearby(lat, lon);
 
         } catch (Exception e) {
@@ -209,6 +269,10 @@ public class HospitalService {
             return List.of();
         }
     }
+
+    // ===================================
+    // 유틸 메서드
+    // ===================================
 
     private Double parseDouble(Object obj) {
         try {
@@ -233,5 +297,4 @@ public class HospitalService {
 
         return null;
     }
-
 }

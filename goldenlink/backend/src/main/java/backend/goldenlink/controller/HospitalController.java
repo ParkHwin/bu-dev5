@@ -44,7 +44,7 @@ public class HospitalController {
      * GET http://localhost:8080/api/search?name=           → 전체 165개 (빈 문자열)
      */
     @GetMapping("/search")
-    public List<HospitalDto> search(@RequestParam(required = false) String name) {
+	public List<HospitalDto> search(@RequestParam(value = "name", required = false) String name) {
         return service.searchByName(name);
     }
 
@@ -60,8 +60,8 @@ public class HospitalController {
      * GET http://localhost:8080/api/nearby?lat=37.5665&lon=126.9780  (서울역 근처)
      */
     @GetMapping("/nearby")
-    public List<HospitalDto> nearby(@RequestParam double lat,
-                                    @RequestParam double lon) {
+	public List<HospitalDto> nearby(@RequestParam("lat") double lat,
+	                                @RequestParam("lon") double lon) {
         return service.nearby(lat, lon);
     }
 
@@ -82,7 +82,7 @@ public class HospitalController {
      *    - JavaScript: encodeURIComponent('서울시 강남구')
      */
     @GetMapping("/address")
-    public List<HospitalDto> address(@RequestParam String address) {
+	public List<HospitalDto> address(@RequestParam("address") String address) {
         return service.searchByAddress(address);
     }
 }

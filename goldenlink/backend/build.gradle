@@ -35,3 +35,9 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Spring MVC에서 @RequestParam/@PathVariable 이름을 reflection으로 추론할 수 있게 함
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-parameters']
+}
+

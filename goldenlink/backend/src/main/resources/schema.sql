@@ -1,6 +1,6 @@
--- DROP TABLE IF EXISTS comments;
--- DROP TABLE IF EXISTS boards;
--- DROP TABLE IF EXISTS EntityUser;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS boards;
+DROP TABLE IF EXISTS EntityUser;
 
 CREATE TABLE EntityUser (
                             id BIGINT AUTO_INCREMENT PRIMARY KEY,

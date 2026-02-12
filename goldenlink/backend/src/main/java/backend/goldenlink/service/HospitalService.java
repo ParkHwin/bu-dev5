@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import jakarta.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class HospitalService {
@@ -29,7 +30,7 @@ public class HospitalService {
     private volatile boolean isLoaded = false;
 
     // ===================================
-    // 📍 서버 시작 시 전국 병원 데이터 로드
+    // 🚀 서버 시작 시 전국 병원 데이터 로드
     // ===================================
     @PostConstruct
     public void loadAllHospitals() {
@@ -82,7 +83,11 @@ public class HospitalService {
                 }
 
                 for (Map<String, Object> item : itemList) {
+                    // ✅ API에서 hid 가져오기 (hpid 또는 dutyId)
+                    String hid = extractHospitalId(item);
+                    
                     HospitalDto dto = new HospitalDto(
+                            hid,  // ✅ 고유 ID 추가
                             (String) item.get("dutyName"),
                             (String) item.get("dutyAddr"),
                             pickTel(item),
@@ -119,7 +124,7 @@ public class HospitalService {
         if (!isLoaded) {
             loadAllHospitals();
         }
-        System.out.println("🌍 전국 모든 병원 조회: " + allHospitals.size() + "개");
+        System.out.println("🌐 전국 모든 병원 조회: " + allHospitals.size() + "개");
         return new ArrayList<>(allHospitals);
     }
 
@@ -127,9 +132,9 @@ public class HospitalService {
     // 1️⃣ 병원 이름 검색 (원래 코드 그대로 - 캐시에서 검색)
     // =========================
     public List<HospitalDto> searchByName(String keyword) {
-        // 🔑 검색어가 없으면 전체 반환
+        // 🔒 검색어가 없으면 전체 반환
         if (keyword == null || keyword.trim().isEmpty()) {
-            System.out.println("🌍 검색어 없음 → 전국 모든 병원 반환 (" + allHospitals.size() + "개)");
+            System.out.println("🌐 검색어 없음 → 전국 모든 병원 반환 (" + allHospitals.size() + "개)");
             return getAllHospitals();
         }
 
@@ -193,7 +198,11 @@ public class HospitalService {
                 System.out.println("✅ 검색된 병원 수: " + itemList.size());
 
                 for (Map<String, Object> item : itemList) {
+                    // ✅ API에서 hid 가져오기
+                    String hid = extractHospitalId(item);
+                    
                     HospitalDto dto = new HospitalDto(
+                            hid,  // ✅ 고유 ID 추가
                             (String) item.get("dutyName"),
                             (String) item.get("dutyAddr"),
                             (String) item.get("dutyTel1"),
@@ -207,7 +216,11 @@ public class HospitalService {
                 Map<String, Object> item = (Map<String, Object>) itemObj;
                 System.out.println("✅ 검색된 병원 수: 1");
 
+                // ✅ API에서 hid 가져오기
+                String hid = extractHospitalId(item);
+                
                 HospitalDto dto = new HospitalDto(
+                        hid,  // ✅ 고유 ID 추가
                         (String) item.get("dutyName"),
                         (String) item.get("dutyAddr"),
                         (String) item.get("dutyTel1"),
@@ -268,6 +281,116 @@ public class HospitalService {
             e.printStackTrace();
             return List.of();
         }
+    }
+
+    // ===================================
+    // ✅ 4️⃣ 가까운 병원 검색 (응급 버튼용) - 새로 추가!
+    // ===================================
+    /**
+     * 응급 버튼에서 사용: 사용자 위치 기반 가장 가까운 병원 검색
+     * 
+     * @param lat 위도
+     * @param lon 경도
+     * @param radiusKm 검색 반경 (km)
+     * @param limit 결과 개수
+     * @return 거리순으로 정렬된 병원 목록
+     */
+    public List<HospitalDto> findNearbyHospitals(Double lat, Double lon, Double radiusKm, Integer limit) {
+        if (!isLoaded) {
+            loadAllHospitals();
+        }
+
+        System.out.println("🚨 응급 버튼: 가까운 병원 검색 시작");
+        System.out.println("   위치: lat=" + lat + ", lon=" + lon);
+        System.out.println("   반경: " + radiusKm + "km");
+        System.out.println("   최대: " + limit + "개");
+
+        // 모든 병원에 대해 거리 계산
+        List<HospitalDto> nearbyHospitals = allHospitals.stream()
+                .map(hospital -> {
+                    // 거리 계산
+                    double distance = calculateDistance(lat, lon, hospital.getHlat(), hospital.getHlon());
+                    
+                    // 새 DTO 생성 (거리 포함)
+                    HospitalDto dto = new HospitalDto(
+                            hospital.getHid(),
+                            hospital.getHname(),
+                            hospital.getHaddress(),
+                            hospital.getHtel(),
+                            hospital.getHlat(),
+                            hospital.getHlon()
+                    );
+                    dto.setDistance(distance);
+                    
+                    return dto;
+                })
+                .filter(dto -> dto.getDistance() <= radiusKm) // 반경 내 병원만
+                .sorted(Comparator.comparingDouble(HospitalDto::getDistance)) // 거리순 정렬
+                .limit(limit) // 개수 제한
+                .collect(Collectors.toList());
+
+        System.out.println("✅ 응급 버튼: " + nearbyHospitals.size() + "개 병원 검색 완료");
+        if (!nearbyHospitals.isEmpty()) {
+            HospitalDto nearest = nearbyHospitals.get(0);
+            System.out.println("   가장 가까운 병원: " + nearest.getHname() + " (" + 
+                    String.format("%.2f", nearest.getDistance()) + "km)");
+        }
+
+        return nearbyHospitals;
+    }
+
+    /**
+     * ✅ 두 좌표 사이의 거리 계산 (Haversine 공식)
+     * 
+     * @param lat1 위도1
+     * @param lon1 경도1
+     * @param lat2 위도2
+     * @param lon2 경도2
+     * @return 거리 (km)
+     */
+    private double calculateDistance(Double lat1, Double lon1, Double lat2, Double lon2) {
+        if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) {
+            return Double.MAX_VALUE;
+        }
+
+        final int EARTH_RADIUS = 6371; // 지구 반지름 (km)
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return EARTH_RADIUS * c; // km
+    }
+
+    // ===================================
+    // ✅ 병원 고유 ID 추출 헬퍼 메서드
+    // ===================================
+    private String extractHospitalId(Map<String, Object> item) {
+        // 1순위: hpid (Hospital ID)
+        Object hpid = item.get("hpid");
+        if (hpid != null && !hpid.toString().isBlank()) {
+            return hpid.toString();
+        }
+        
+        // 2순위: dutyId (Duty ID)
+        Object dutyId = item.get("dutyId");
+        if (dutyId != null && !dutyId.toString().isBlank()) {
+            return dutyId.toString();
+        }
+        
+        // 3순위: dutyName (병원 이름을 ID로 사용)
+        Object dutyName = item.get("dutyName");
+        if (dutyName != null && !dutyName.toString().isBlank()) {
+            return dutyName.toString();
+        }
+        
+        // 4순위: UUID 생성 (최후의 수단)
+        return "UNKNOWN_" + UUID.randomUUID().toString().substring(0, 8);
     }
 
     // ===================================

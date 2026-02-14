@@ -14,10 +14,6 @@ export default function ResultView({
 }) {
   return (
     <aside className="gl-result-view">
-      {/* 닫기 버튼 */}
-      <button className="gl-result-close" onClick={onClose} aria-label="결과 닫기">
-        ✕
-      </button>
 
       {/* 헤더 */}
       <div className="gl-result-header">

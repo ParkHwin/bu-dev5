@@ -999,3 +999,49 @@
     box-shadow: none !important;
   }
 }
+
+/* 카카오맵 기본 스타일 제거 */
+.kakao-infowindow {
+  border: none !important;
+  background: transparent !important;
+}
+
+/* 인포윈도우 카드 */
+.gl-infoCard {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  max-width: 300px;
+}
+
+.gl-infoTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.gl-infoRow {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.gl-infoBtn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  background:rgba(225,29,72);
+  color: white !important;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}

@@ -88,13 +88,6 @@ export default function FilterView({
           📍 현재 위치 업데이트
         </button>
 
-        <button
-          className="gl-btn gl-btnGhost"
-          onClick={onReset}
-          type="button"
-        >
-          🔄 초기화
-        </button>
       </div>
     </aside>
   );

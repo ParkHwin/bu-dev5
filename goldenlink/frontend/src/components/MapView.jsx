@@ -198,6 +198,7 @@ const MapView = forwardRef(
 
           const marker = new window.kakao.maps.Marker({
             position: moveLatLng,
+            zIndex: 9999, // 🔥 항상 제일 위
             image: new window.kakao.maps.MarkerImage(
               myLocationIcon,
               new window.kakao.maps.Size(40, 40),

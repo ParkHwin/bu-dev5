@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "http://13.125.249.169:8080";
 
 export default function useHospitalResults({ hospitals, user }) {
   // Filters / UI state

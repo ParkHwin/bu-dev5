@@ -1,0 +1,57 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: goldenlink-db
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: goldenlink
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - db_data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: hyeonseung01/goldenlink-backend:latest
+
+    container_name: goldenlink-backend
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/goldenlink?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+    ports:
+      - "8080:8080"
+
+    restart: unless-stopped
+
+  frontend:
+    image: hyeonseung01/goldenlink-frontend:latest
+
+    container_name: goldenlink-frontend
+
+    ports:
+      - "80:80"
+
+    depends_on:
+      - backend
+
+    restart: unless-stopped
+
+volumes:
+  db_data:

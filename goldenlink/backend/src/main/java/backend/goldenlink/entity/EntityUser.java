@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "EntityUser") // ✅ DB 테이블명과 1:1로 고정
+@Table(name = "entityuser") // ✅ DB 테이블명과 1:1로 고정
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class EntityUser {
 

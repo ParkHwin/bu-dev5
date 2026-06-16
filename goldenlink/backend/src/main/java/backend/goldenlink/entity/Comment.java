@@ -26,12 +26,12 @@ public class Comment {
 
     // ✅ 게시글
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "boardid", nullable = false)
+    @JoinColumn(name = "board_id", nullable = false)
     @JsonIgnore  // 순환 참조 방지
     private Board board;
 
     // ✅ 생성일 - JSON 직렬화 형식 지정
-    @Column(name = "createdAt", nullable = false)
+    @Column(name = "created_at", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 

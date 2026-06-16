@@ -34,7 +34,7 @@ public class Board {
     private String content;
 
     // ✅ 생성일 - JSON 직렬화 형식 지정
-    @Column(name = "createdAt")
+    @Column(name = "created_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 

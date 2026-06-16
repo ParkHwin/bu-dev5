@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"curl -s http://localhost:8080/boards\",\"description\":\"Test boards API endpoint\"}",
+  "error": "Exit code 7",
+  "timestamp": "2026-06-15T17:31:53.347Z",
+  "retry_count": 1
+}

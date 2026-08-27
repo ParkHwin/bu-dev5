@@ -31,7 +31,7 @@ GoldenLink는 공공데이터와 위치 정보를 활용해 사용자의 주변 
 | **Database** | MySQL |
 | **ORM** | Spring Data JPA |
 | **API 연동** | Kakao REST API, 공공데이터 API |
-| **Tools** | IntelliJ IDEA, Postman, Git |
+| **Tools** | vscode, Postman, Git |
 
 ---
 
